@@ -1,5 +1,5 @@
-
-
+import os
+from dotenv import load_dotenv
 import discord
 from discord.ext import commands, tasks
 import json
@@ -528,4 +528,13 @@ async def start_feedback(ctx):
     print(feedback_data)
     
 
-    
+
+
+# Load the .env file
+load_dotenv()
+
+# Retrieve the token from the environment
+token = os.getenv('DISCORD_TOKEN')
+
+# Run your Discord bot using the token
+client.run(token)
