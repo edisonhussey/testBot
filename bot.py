@@ -12,57 +12,15 @@ from dotenv import load_dotenv
 import discord
 from discord.ext import commands
 from discord.ui import Button, View, Modal, TextInput
-
-
-
 intents = discord.Intents.default()
 intents.message_content = True  # Enable message content intent
 intents.members = True
 client = commands.Bot(command_prefix='!', intents=intents)
 
-
-class QuizView1(View):
-    def __init__(self, num_buttons: int, timeout=5):
-        super().__init__(timeout=timeout)
-        self.user_presses = {}
-        self.message = None  # This will store the message reference for later editing
-
-        # Dynamically add buttons
-        for i in range(num_buttons):
-            button = Button(label=f"Option {i + 1}", custom_id=str(i + 1))
-            button.callback = self.capture_response  # Set the callback method for button press
-            self.add_item(button)
-        self.startTime=time.time()
-
-    async def on_timeout(self):
-        for item in self.children:
-            item.disabled = True  # Disable all buttons in the view
-        timeout_message = "Time is up! The quiz has ended."
-        await self.message.edit(content=timeout_message, view=self)
-        return self.user_presses
-
-    async def capture_response(self, interaction: discord.Interaction):
-        user_id = interaction.user.id
-        option_selected = interaction.data["custom_id"]  # Get the button ID (option selected)
-
-        # Print selected option for debug purposes
-        print(user_id, option_selected)
-
-        # Check if the user has already pressed a button
-        if user_id in self.user_presses:
-            # await interaction.response.send_message("You have already made a selection!", ephemeral=True)
-            await interaction.response.defer()  # Make this response visible only to the user
-            return
-
-        # Record the user's selection
-        self.user_presses[user_id] = [int(option_selected)-1,time.time()-self.startTime ]
-        
-        await interaction.response.defer()
-        # await interaction.response.send_message(content=f"You selected option {option_selected}.", ephemeral=True)
 class QuizView(View):
     def __init__(self, num_buttons: int, timeout=5):
         super().__init__(timeout=timeout)
-        self.user_presses = {}
+        self.userPresses = {}
         self.message = None  # This will store the message reference for later editing
         self.start_time = time.time()  # Track when the quiz started
         self.remaining_time = timeout  # Countdown duration in seconds
@@ -98,7 +56,7 @@ class QuizView(View):
         if self.message:
             await self.message.edit(content=timeout_message, view=self)
         
-        return self.user_presses
+        return self.userPresses
 
     async def capture_response(self, interaction: discord.Interaction):
         """Handle a button press, record the user's selection."""
@@ -109,14 +67,14 @@ class QuizView(View):
         print(user_id, option_selected)
 
         # Check if the user has already pressed a button
-        if user_id in self.user_presses:
+        if user_id in self.userPresses:
             await interaction.response.defer()  # Make this response visible only to the user
             return
 
         # Record the user's selection along with the time taken
-        # self.user_presses[user_id] = [int(option_selected) - 1, round(time.time() - self.start_time,2)]
+        # self.userPresses[user_id] = [int(option_selected) - 1, round(time.time() - self.start_time,2)]
          #{time: float, questionType: response: , "isCorrect" }
-        self.user_presses[user_id] = {
+        self.userPresses[user_id] = {
             "time": round(time.time()-self.start_time,2),
             "response": int(option_selected)-1
         }
@@ -192,7 +150,7 @@ class QuizInformation:
             string: that is ...
         """
         try:
-            with open("quizData.json", "r") as file:
+            with open("quizData.json", "r",encoding="utf-8") as file:
                 data = json.load(file)
         except (FileNotFoundError, json.JSONDecodeError):
             return  # If file doesn't exist or is invalid, start with an empty dictionary
@@ -232,8 +190,6 @@ def formatCode(code, language=None)->str:
 
 @client.command()
 async def quiz(ctx, *, quiz: str):
-    
-    
     try:
         channel = ctx.channel  # This will get the current channel
         guild = ctx.guild      # The server (guild) where the channel is located
@@ -241,28 +197,14 @@ async def quiz(ctx, *, quiz: str):
         await guild.chunk()  # This loads all members into cache if not already
         members = []
         memberToUsername={}
-
-
-        # await ctx.message.delete()
-        # print(f"ctx.message: {ctx.message}")
-        
-        # Loop through all members in the guild
         for member in guild.members:
             if channel.permissions_for(member).read_messages and not member.bot:  # Check if the member can read messages in the channel
                 members.append(member.id)  # Append the Discord ID of the member
                 memberToUsername[member.id]=member.name
-                
-        
-        print(memberToUsername)
         await ctx.message.delete()
-        
         with open("quiz.json","r", encoding="utf-8") as file:
             quizJson=json.load(file)[quiz]
-            
-
-        
         questionCount=len(quizJson["questionList"])
-        # memberCount=len(members)
 
 
         questionType=[]
@@ -378,6 +320,11 @@ class MyView(View):
  
     
 class FeedbackModal(Modal):
+    """A modal for collecting user feedback. Used in the FeedbackView.
+
+    Args:
+        Modal (): The base modal class to inherit from.
+    """
     def __init__(self, feedback_view):
         super().__init__(title="Feedback Form")
         self.feedback_view = feedback_view  # Reference to the FeedbackView instance
@@ -417,26 +364,35 @@ class FeedbackModal(Modal):
 
 
 class SubmitButton(Button):
+    """A custom button for submitting feedback in the FeedbackView.
+
+    Args:
+        Button (): Inherit from the base Button class.
+    """
     def __init__(self, feedback_view):
         super().__init__(label="Submit Feedback", style=discord.ButtonStyle.primary)
         self.feedback_view = feedback_view  # Reference to the FeedbackView instance
-        self.user_presses = {}  # Store which users have already submitted
+        self.userPresses = {}  # Store which users have already submitted
 
     async def callback(self, interaction: discord.Interaction):
         user_id = interaction.user.id
 
         # Check if user has already submitted
-        if user_id in self.user_presses:
+        if user_id in self.userPresses:
             await interaction.response.send_message("You have already submitted!", ephemeral=True)
             return
 
         # If they haven't submitted yet, open the modal and mark them as submitted
-        self.user_presses[user_id] = time.time()
+        self.userPresses[user_id] = time.time()
         value = await interaction.response.send_modal(FeedbackModal(self.feedback_view))  # Pass the feedback view
 
 
 class FeedbackView(View):
-    
+    """A modified view that includes a SubmitButton and a countdown timer.
+
+    Args:
+        View (): The base view class to inherit from.
+    """
     def __init__(self, timeout=15):
         super().__init__(timeout=timeout)
         self.submit_button = SubmitButton(self)  # Pass self to the button
@@ -459,10 +415,8 @@ class FeedbackView(View):
 
     async def on_timeout(self):
         """Disable the button and notify that the submission period has ended."""
-        # Disable all buttons when the view times out
         for item in self.children:
             item.disabled = True
-        # Update the message to indicate the time is up
         if self.message:
             await self.message.edit(content="Time is up! Feedback submission is closed.", view=self)
 
