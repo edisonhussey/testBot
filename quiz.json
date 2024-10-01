@@ -1,0 +1,131 @@
+{
+    "quiz0": {
+        "questionList": [
+            {
+                "choiceType": "multiple",
+                "questionText": "Select the function which returns the absolute value of a number.",
+                "choiceList": [
+                    "def absolute_value(x):\n    return abs(x)\n    # This function returns the absolute value.",
+                    "def round_number(x):\n    return round(x)\n    # This function rounds a number to the nearest integer.",
+                    "def maximum_value(x, y):\n    return max(x, y)\n    # This function returns the maximum of two numbers."
+                ],
+                "choiceLanguage": "python",
+                "timeLimit": 10,
+                "imageURL": "https://cdn.mos.cms.futurecdn.net/FaWKMJQnr2PFcYCmEyfiTm-1200-80.jpg",
+                "answer": 0
+            },
+            {
+                "choiceType": "simpleText",
+                "questionText": "what animal is this?",
+                "choiceLanguage": "python",
+                "timeLimit": 3,
+                "imageURL": "https://cdn.britannica.com/29/150929-050-547070A1/lion-Kenya-Masai-Mara-National-Reserve.jpg",
+                "answer": "lion"
+            },
+            {
+                "choiceType": "multiple",
+                "questionText": "Select the function which finds the length of a list.",
+                "choiceList": [
+                    "def list_length(lst):\n    return len(lst)\n    # This function returns the length of the list.",
+                    "def get_length(lst):\n    return length(lst)\n    # This function attempts to get the length, but is incorrect.",
+                    "def size_of_list(lst):\n    return size(lst)\n    # This function attempts to return the size of the list, but is incorrect."
+                ],
+                "choiceLanguage": "python",
+                "timeLimit": 3,
+                "imageURL": null,
+                "answer": 1
+            },
+            {
+                "choiceType": "multiple",
+                "questionText": "Select the function which converts a string to lowercase.",
+                "choiceList": [
+                    "def to_lower(s):\n    return s.lower()\n    # This function converts a string to lowercase.",
+                    "def to_lowercase(s):\n    return toLowerCase(s)\n    # This function uses incorrect method for lowercase.",
+                    "def capitalize_string(s):\n    return s.capitalize()\n    # This function capitalizes the first letter of the string."
+                ],
+                "choiceLanguage": "python",
+                "timeLimit": 3,
+                "imageURL": null,
+                "answer": 0
+            },
+            {
+                "choiceType": "multiple",
+                "questionText": "Select the function which returns a random number.",
+                "choiceList": [
+                    "def random_number():\n    return random()\n    # This function returns a random float number.",
+                    "def random_integer(low, high):\n    return randint(low, high)\n    # This function returns a random integer between low and high.",
+                    "def random_choice(choices):\n    return choice(choices)\n    # This function randomly selects an item from a list."
+                ],
+                "choiceLanguage": "python",
+                "timeLimit": 3,
+                "imageURL": null,
+                "answer": 0
+            },
+            {
+                "choiceType": "multiple",
+                "questionText": "Select the function which removes an item from a list.",
+                "choiceList": [
+                    "def remove_item(lst, item):\n    lst.remove(item)\n    # This function removes the first occurrence of the item.",
+                    "def delete_item(lst, index):\n    del lst[index]\n    # This function deletes an item at the specified index.",
+                    "def discard_item(lst, item):\n    lst.discard(item)\n    # This function attempts to discard an item, but is incorrect."
+                ],
+                "choiceLanguage": "python",
+                "timeLimit": 3,
+                "imageURL": null,
+                "answer": 0
+            },
+            {
+                "choiceType": "multiple",
+                "questionText": "Select the function which returns the maximum value in a list.",
+                "choiceList": [
+                    "def maximum_value(lst):\n    return max(lst)\n    # This function returns the maximum value in the list.",
+                    "def largest_in_list(lst):\n    return largest(lst)\n    # This function is incorrect and will throw an error.",
+                    "def biggest_in_list(lst):\n    return biggest(lst)\n    # This function is incorrect and will throw an error."
+                ],
+                "choiceLanguage": "python",
+                "timeLimit": 3,
+                "imageURL": null,
+                "answer": 0
+            },
+            {
+                "choiceType": "multiple",
+                "questionText": "Select the function which counts occurrences of an element in a list.",
+                "choiceList": [
+                    "def count_occurrences(lst, item):\n    return lst.count(item)\n    # This function counts occurrences of item in the list.",
+                    "def occurrences(lst, item):\n    return occurrences(lst, item)\n    # This function is incorrect and will lead to recursion error.",
+                    "def frequency_count(lst, item):\n    return frequency(lst, item)\n    # This function is incorrect and will lead to an error."
+                ],
+                "choiceLanguage": "python",
+                "timeLimit": 3,
+                "imageURL": null,
+                "answer": 0
+            },
+            {
+                "choiceType": "multiple",
+                "questionText": "Select the function which joins a list of strings into a single string.",
+                "choiceList": [
+                    "def join_strings(lst):\n    return ''.join(lst)\n    # This function joins a list of strings into a single string.",
+                    "def concatenate_strings(lst):\n    return concat(lst)\n    # This function is incorrect as 'concat' is not defined.",
+                    "def combine_strings(lst):\n    return combine(lst)\n    # This function is incorrect as 'combine' is not defined."
+                ],
+                "choiceLanguage": "python",
+                "timeLimit": 3,
+                "imageURL": null,
+                "answer": 0
+            },
+            {
+                "choiceType": "multiple",
+                "questionText": "Select the function which converts an integer to a string.",
+                "choiceList": [
+                    "def int_to_str(n):\n    return str(n)\n    # This function converts an integer to a string.",
+                    "def to_string(n):\n    return toString(n)\n    # This function uses incorrect method for conversion.",
+                    "def convert_to_string(n):\n    return convert(n)\n    # This function is incorrect as 'convert' is not defined."
+                ],
+                "choiceLanguage": "python",
+                "timeLimit": 3,
+                "imageURL": null,
+                "answer": 0
+            }
+        ]
+    }
+}

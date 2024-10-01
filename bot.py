@@ -8,17 +8,12 @@ import os
 import json
 import time
 import asyncio
-# import math
-
-from dotenv import load_dotenv  # noqa
+from dotenv import load_dotenv
 import discord
 from discord.ext import commands
-
-
 from discord.ui import Button, View, Modal, TextInput
-# import numpy as np
 
-import pprint
+
 
 intents = discord.Intents.default()
 intents.message_content = True  # Enable message content intent
@@ -30,7 +25,6 @@ class QuizView1(View):
     def __init__(self, num_buttons: int, timeout=5):
         super().__init__(timeout=timeout)
         self.user_presses = {}
-        
         self.message = None  # This will store the message reference for later editing
 
         # Dynamically add buttons
@@ -38,27 +32,13 @@ class QuizView1(View):
             button = Button(label=f"Option {i + 1}", custom_id=str(i + 1))
             button.callback = self.capture_response  # Set the callback method for button press
             self.add_item(button)
-            
         self.startTime=time.time()
-        
 
     async def on_timeout(self):
-        # Disable all buttons when the view times out
         for item in self.children:
             item.disabled = True  # Disable all buttons in the view
-        
-        # Update the message content to indicate that the quiz has ended
         timeout_message = "Time is up! The quiz has ended."
-
-        # Resend the updated view with disabled buttons
-        # if self.message:
-            # Edit the message with the updated buttons and new content
-        
         await self.message.edit(content=timeout_message, view=self)
-        
-        # for value in self.user_presses:
-        #     value = int(value) - 1
-            
         return self.user_presses
 
     async def capture_response(self, interaction: discord.Interaction):
@@ -79,7 +59,6 @@ class QuizView1(View):
         
         await interaction.response.defer()
         # await interaction.response.send_message(content=f"You selected option {option_selected}.", ephemeral=True)
-        
 class QuizView(View):
     def __init__(self, num_buttons: int, timeout=5):
         super().__init__(timeout=timeout)
@@ -141,15 +120,12 @@ class QuizView(View):
             "time": round(time.time()-self.start_time,2),
             "response": int(option_selected)-1
         }
-        
         await interaction.response.defer()
 
     async def start_quiz(self, message):
         """Start the quiz and begin the countdown."""
         self.message = message
         await self.countdown()
-        
-        
 class QuizInformation:
     def __init__(self, questionCount:int, members:list, answers: list, moduleId:str, quizId:str, userId:str, questionType: list, memberToUsername) -> None:
         self.memberCount=len(members)
@@ -160,17 +136,13 @@ class QuizInformation:
         self.leaderboard={}
         self.answers=answers
         self.memberToUsername=memberToUsername
-        
         self.questionType=questionType
-        
         self.moduleId=moduleId
         self.quizId=quizId
         self.timestamp=round(time.time(),2)
         self.userId=userId
-        
         self.key = f"{self.moduleId}-{self.quizId}-{self.timestamp}-{self.userId}"
 
-        
         for i in range(self.memberCount):
             self.map[members[i]]=i
             self.leaderboard[members[i]]=0
@@ -189,9 +161,9 @@ class QuizInformation:
                     value["isCorrect"]=False
                     
                 self.matrix[self.map[discordId]][questionIndex]=value
-                pass
             case "multipleAnswer":
-                pass
+                return 
+
             case "simpleText":
                 print(value)
                 if value["response"]==self.answers[questionIndex]:
@@ -199,15 +171,9 @@ class QuizInformation:
                     value["isCorrect"]=True
                 else:
                     value["isCorrect"]=False
-                    
                 self.matrix[self.map[discordId]][questionIndex]=value
-                pass
             case "multipleText":
                 return 
-            
-  
-        pprint.pprint(self.matrix)
-        
 
     def sortLeaderboard(self):
         self.leaderboard = dict(sorted(self.leaderboard.items(), key=lambda item: item[1], reverse=True))
@@ -241,11 +207,9 @@ class QuizInformation:
         }
 
         # Write the updated data back to the file
-        with open("quizData.json", "w") as file:
-            json.dump(data, file, indent=4) 
-
-
-
+        with open("quizData.json", "w", encoding="utf-8") as file:
+            json.dump(data, file, indent=4)
+            
 def create_leaderboard_embed(leaderboard):
     embed = discord.Embed(title="Leaderboard", color=0xFFFFFF)
 
@@ -258,21 +222,13 @@ def create_leaderboard_embed(leaderboard):
             value=f"**Score:** {score}", 
             inline=False
         )
-
     return embed
 
-        
-
-
-
-def formatCode(code, language=None):
-    if language==None:
+def formatCode(code, language=None)->str:
+    if language is None:
         return code
     
     return f"```{language}\n{code}\n```"
-
-
-
 
 @client.command()
 async def quiz(ctx, *, quiz: str):
@@ -300,7 +256,7 @@ async def quiz(ctx, *, quiz: str):
         print(memberToUsername)
         await ctx.message.delete()
         
-        with open("quiz.json","r") as file:
+        with open("quiz.json","r", encoding="utf-8") as file:
             quizJson=json.load(file)[quiz]
             
 
@@ -378,23 +334,12 @@ async def quiz(ctx, *, quiz: str):
                     leaderboardEmbed = create_leaderboard_embed(leaderboard)
                     await ctx.send(embed=leaderboardEmbed)
                     await asyncio.sleep(2)
-                    
-                    # print(quizInformation)
-                    
-                    pass 
                 case "simpleText":
-                    
-                    # optionCount=len(currentQuestion["choiceList"])
-                    # for j in range(optionCount):
-                        
-                        # optionsText+=f"{j+1}: {formatCode(currentQuestion["choiceList"][j],language="python")}\n"
                     
                     if imageURL is not None:
                         embed.set_image(url=imageURL)
 
                     await ctx.send(embed=embed)
-                    
-
                     view = FeedbackView(timeout=5)  # Set a 15-second countdown
                     message = await ctx.send("Click the button to provide feedback!", view=view)
                     await view.start_feedback(message)
@@ -419,9 +364,7 @@ async def quiz(ctx, *, quiz: str):
             
 
     except Exception as e:
-        print('ok')
-        
-        
+        print(e)
 class MyView(View):
     def __init__(self):
         super().__init__()
@@ -463,7 +406,7 @@ class FeedbackModal(Modal):
         }
 
         # Send a response to the user
-        await interaction.response.send_message(f"Thanks for your feedback!", ephemeral=True)
+        await interaction.response.send_message("Thanks for your feedback!", ephemeral=True)
 
         # Store the feedback data in the FeedbackView's data dict
         self.feedback_view.data[interaction.user.id] = feedback_data
@@ -493,6 +436,7 @@ class SubmitButton(Button):
 
 
 class FeedbackView(View):
+    
     def __init__(self, timeout=15):
         super().__init__(timeout=timeout)
         self.submit_button = SubmitButton(self)  # Pass self to the button
@@ -518,7 +462,6 @@ class FeedbackView(View):
         # Disable all buttons when the view times out
         for item in self.children:
             item.disabled = True
-        
         # Update the message to indicate the time is up
         if self.message:
             await self.message.edit(content="Time is up! Feedback submission is closed.", view=self)
@@ -527,21 +470,6 @@ class FeedbackView(View):
         """Start the feedback submission process and begin countdown."""
         self.message = message
         await self.countdown()  # Start the countdown loop
-    
-    
-    
-# Create a command to trigger the feedback button
-@client.command()
-async def start_feedback(ctx):
-    view = FeedbackView(timeout=5)  # Set a 15-second countdown
-    message = await ctx.send("Click the button to provide feedback!", view=view)
-    await view.start_feedback(message)
-    
-    await view.wait()
-    feedback_data = view.data
-    print(feedback_data)
-    
-
 
 
 # Load the .env file
