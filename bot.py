@@ -1,14 +1,23 @@
+"""_summary_
+
+Returns:
+    _type_: _description_
+"""
+
 import os
-from dotenv import load_dotenv
-import discord
-from discord.ext import commands, tasks
 import json
 import time
 import asyncio
-import math
+# import math
+
+from dotenv import load_dotenv  # noqa
+import discord
+from discord.ext import commands
+
+
 from discord.ui import Button, View, Modal, TextInput
-import numpy as np
-import traceback
+# import numpy as np
+
 import pprint
 
 intents = discord.Intents.default()
@@ -211,6 +220,11 @@ class QuizInformation:
 
 
     def writeData(self):
+        """Function to write data to ...
+
+        Returns:
+            string: that is ...
+        """
         try:
             with open("quizData.json", "r") as file:
                 data = json.load(file)
